@@ -1,0 +1,32 @@
+﻿Build started 2011.12.07. 16:31:51.
+     1>Project "C:\Users\Petya\Desktop\Grafika nagyházi\Helis\Helis.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\Helis.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I"C:\Program Files\Microsoft Visual Studio 10.0\VC\include\glm\gtc" /I"C:\Program Files\Microsoft Visual Studio 10.0\VC\include\glm\gtx" /I"C:\Program Files\Microsoft Visual Studio 10.0\VC\include\glm\core" /I"C:\Program Files\Microsoft Visual Studio 10.0\VC\include\glm" /I"C:\Program Files\NVIDIA Corporation\Cg\include" /ZI /nologo /W0 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt heightMap.cpp
+         heightMap.cpp
+       ManifestResourceCompile:
+         All outputs are up-to-date.
+       Link:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Petya\Desktop\Grafika nagyházi\Debug\Helis.exe" /INCREMENTAL /NOLOGO cgGL.lib cg.lib glew32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /ManifestFile:"Debug\Helis.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Petya\Desktop\Grafika nagyházi\Debug\Helis.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Petya\Desktop\Grafika nagyházi\Debug\Helis.lib" /MACHINE:X86 Debug\Helis.exe.embed.manifest.res
+         Debug\cgSetup.obj
+         Debug\glm.obj
+         Debug\heightMap.obj
+         Debug\Helis.obj
+         Debug\keys.obj
+         Debug\SkyBox.obj
+         Debug\texturing.obj
+       Manifest:
+         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Helis.exe.embed.manifest" /manifest Debug\Helis.exe.intermediate.manifest
+         All outputs are up-to-date.
+       LinkEmbedManifest:
+         All outputs are up-to-date.
+         Helis.vcxproj -> C:\Users\Petya\Desktop\Grafika nagyházi\Debug\Helis.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\Helis.unsuccessfulbuild".
+         Touching "Debug\Helis.lastbuildstate".
+     1>Done Building Project "C:\Users\Petya\Desktop\Grafika nagyházi\Helis\Helis.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:01.85

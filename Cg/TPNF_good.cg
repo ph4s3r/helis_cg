@@ -1,0 +1,133 @@
+
+//*********************************************************
+//VERTEX SHADER********************************************
+//*********************************************************
+
+void special_vertex(float4 position : POSITION,
+                            float3 normal   : NORMAL,
+							float2 texCoord : TEXCOORD0, 
+
+                        out float4 oPosition : HPOS,
+						out float2 otexCoord : TEX0,
+                        out float3 objectPos : TEX1,
+                        out float3 oNormal   : TEX2,
+						out float fogExponent :TEX3,
+						
+                    uniform float4x4 modelViewProj,
+					uniform float4x4 modelViewH,
+					uniform float4x4 modelView)
+{
+  oPosition = mul(modelViewProj, position);
+  objectPos = position.xyz;
+  float3 WorldNormal = mul((float3x3)modelViewH, normal);
+  oNormal = normalize(WorldNormal);
+  otexCoord = texCoord;
+  // (Uniform) fog exponent calc:
+  float fogDensity = 0.001;
+  float3 eyePosition = mul(modelView, position).xyz;
+  float fogDistance  = length(eyePosition);
+  fogExponent = fogDistance * fogDensity;
+}
+
+//*********************************************************
+//FRAGMENT SHADER******************************************
+//*********************************************************
+
+void special_fragment(float2 texCoord : TEXCOORD0,
+						float4 position  : TEXCOORD1,         
+                        float3 normal    : TEXCOORD2,
+						float  fogExponent : TEXCOORD3,
+                           
+                  out float4 color     : COLOR0,
+
+              uniform float3 globalAmbient,
+              uniform float3 lightColor,
+              uniform float3 lightPosition,
+              uniform float3 eyePosition,
+              uniform float3 Ke,
+              uniform float3 Ka,
+              uniform float3 Kd,
+              uniform float3 Ks,
+              uniform float  shininess,
+			  uniform sampler2D decal : TEX0,
+			  uniform int tex_env_mode)
+{
+  float3 P = position.rgb;
+  float3 N = normalize(normal);
+
+  // Compute emissive term
+  float3 emissive = Ke;
+
+  // Compute ambient term
+  float3 ambient = Ka * globalAmbient;
+
+  // Compute the diffuse term
+  float3 L = normalize(lightPosition - P);
+  float diffuseLight = max(dot(L, N), 0);
+  float3 diffuse = Kd * lightColor * diffuseLight;
+
+  // Compute the specular term
+  float3 V = normalize(eyePosition - P);
+  float3 H = normalize(L + V);
+  float specularLight = pow(max(dot(H, N), 0), shininess);
+  if (diffuseLight <= 0) specularLight = 0;
+  float3 specular = Ks * lightColor * specularLight;
+
+  //Result of the illumination 
+  float3 IColor = emissive + ambient + diffuse + specular;
+
+  //Texture color
+  float3 Tex = tex2D(decal,texCoord).rgb;
+
+  // Fog
+  float3 fogColor = (0.6, 0.6, 0.6);
+  float fogFactor   = exp2(-abs(fogExponent));
+					
+  // tex_env_mode: 
+  //0: Modulate illuminated color with the texture color (GL_MODULATE) Tex*IColor
+  //1: Only texture rules, replacing the illuminated color (IColor) (GL_REPLACE)
+  //2: My method: Modulate IColor with  (1 - texture color), inverting texture color
+  //3: Add (GL_ADD) 
+  //4: Add-Signed (GL_ADD_SIGNED) Tex + IColor - 0.5 
+  //5: Interpolate (GL_INTERPOLATE) Tex*IColor + Tex*(1-IColor)
+  //6: Other Interpolation: Tex*IColor + (1 - Tex)*IColor
+  //if the parameter not specified by host app, initial value is zero
+
+  // Color produced by lighting & texture based on tex_env_mode
+  float3 finalColor;
+	
+  if(tex_env_mode == 0) {
+	finalColor = IColor * Tex;
+  }
+  else if(tex_env_mode == 1) {
+	finalColor = Tex;
+  }
+  else if(tex_env_mode == 2) {
+	finalColor = IColor * (1.0 - Tex);
+  }
+  else if(tex_env_mode == 3) {
+	finalColor = IColor + Tex;
+  }
+  else if(tex_env_mode == 4) {
+	finalColor = IColor + Tex - 0.5;
+  }
+   else if(tex_env_mode == 5) {
+	finalColor = Tex*IColor + Tex*(1.0-IColor);
+  }
+   else if(tex_env_mode == 6) {
+	finalColor = Tex*IColor + (1.0 - Tex)*IColor;
+  }
+  //Default is Blending
+  else {
+	finalColor = IColor * Tex;
+  }
+
+  //Finally we interpolate the pixel color with fog color based on the distance to the eye position (fogfactor)
+  color.rgb = lerp(fogColor, finalColor,
+                    fogFactor);
+  color.a = 1;
+  
+  }
+
+
+
